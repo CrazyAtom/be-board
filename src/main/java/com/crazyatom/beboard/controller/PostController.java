@@ -29,7 +29,7 @@ public class PostController {
 
 	private final PostService postService;
 
-	private String GetCurrentUsername() {
+	private String getCurrentUsername() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return auth.getName();
 	}
