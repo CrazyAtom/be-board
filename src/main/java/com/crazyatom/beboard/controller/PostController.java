@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,11 @@ import lombok.RequiredArgsConstructor;
 public class PostController {
 
 	private final PostService postService;
+
+	private String GetCurrentUsername() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return auth.getName();
+	}
 
 	/**
 	 * 게시글 전체 목록 조회
@@ -55,7 +62,7 @@ public class PostController {
 	 */
 	@PostMapping
 	public ResponseEntity<Long> createPost(@RequestBody PostRequestDto postRequestDto) {
-		String username = "testuser"; // TODO: Replace with actual authentication logic
+		String username = getCurrentUsername();
 		Long id = postService.createPost(postRequestDto, username);
 		return ResponseEntity.status(HttpStatus.CREATED).body(id);
 	}
@@ -68,7 +75,7 @@ public class PostController {
 	 */
 	@PutMapping("/{id}")
 	public ResponseEntity<Long> updatePost(@PathVariable Long id, @RequestBody PostRequestDto dto) {
-		String username = "testuser"; // TODO: Replace with actual authentication logic
+		String username = getCurrentUsername();
 		postService.updatePost(id, dto, username);
 		return ResponseEntity.ok().build();
 	}
@@ -80,7 +87,7 @@ public class PostController {
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletePost(@PathVariable Long id) {
-		String username = "testuser"; // TODO: Replace with actual authentication logic
+		String username = getCurrentUsername();
 		postService.deletePost(id, username);
 	}
 }
