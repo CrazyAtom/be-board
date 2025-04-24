@@ -20,8 +20,12 @@ import com.crazyatom.beboard.dto.PostRequestDto;
 import com.crazyatom.beboard.dto.PostResponseDto;
 import com.crazyatom.beboard.service.PostService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "게시글 관리", description = "게시글 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
@@ -38,6 +42,7 @@ public class PostController {
 	 * 게시글 전체 목록 조회
 	 * @return ResponseEntity<List < PostResponseDto>>
 	 */
+	@Operation(summary = "게시글 전체 목록 조회", description = "게시글 전체 목록을 조회합니다.")
 	@GetMapping
 	public ResponseEntity<List<PostResponseDto>> getAllPosts() {
 		List<PostResponseDto> posts = postService.getAllPosts();
@@ -49,8 +54,12 @@ public class PostController {
 	 * @param id 게시글 ID
 	 * @return ResponseEntity<PostResponseDto>
 	 */
+	@Operation(summary = "게시글 단건 조회", description = "게시글 ID로 게시글을 조회합니다.")
 	@GetMapping("/{id}")
-	public ResponseEntity<PostResponseDto> getPost(@PathVariable Long id) {
+	public ResponseEntity<PostResponseDto> getPost(
+		@Parameter(description = "게시글 ID")
+		@PathVariable Long id) {
+
 		PostResponseDto post = postService.getPost(id);
 		return ResponseEntity.ok(post);
 	}
@@ -60,8 +69,12 @@ public class PostController {
 	 * @param postRequestDto 게시글 생성 요청 DTO
 	 * @return ResponseEntity<Long> 생성된 게시글 ID
 	 */
+	@Operation(summary = "게시글 생성", description = "새로운 게시글을 생성합니다.")
 	@PostMapping
-	public ResponseEntity<Long> createPost(@RequestBody PostRequestDto postRequestDto) {
+	public ResponseEntity<Long> createPost(
+		@Parameter(description = "게시글 생성 정보")
+		@RequestBody PostRequestDto postRequestDto) {
+
 		String username = getCurrentUsername();
 		Long id = postService.createPost(postRequestDto, username);
 		return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -73,8 +86,14 @@ public class PostController {
 	 * @param dto 게시글 수정 요청 DTO
 	 * @return ResponseEntity<Long> 수정된 게시글 ID
 	 */
+	@Operation(summary = "게시글 수정", description = "게시글 ID로 게시글을 수정합니다.")
 	@PutMapping("/{id}")
-	public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody PostRequestDto dto) {
+	public ResponseEntity<Void> updatePost(
+		@Parameter(description = "게시글 ID")
+		@PathVariable Long id,
+		@Parameter(description = "게시글 수정 정보")
+		@RequestBody PostRequestDto dto) {
+
 		String username = getCurrentUsername();
 		postService.updatePost(id, dto, username);
 		return ResponseEntity.ok().build();
@@ -84,9 +103,13 @@ public class PostController {
 	 * 게시글 삭제
 	 * @param id 게시글 ID
 	 */
+	@Operation(summary = "게시글 삭제", description = "게시글 ID로 게시글을 삭제합니다.")
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+	public ResponseEntity<Void> deletePost(
+		@Parameter(description = "게시글 ID")
+		@PathVariable Long id) {
+
 		String username = getCurrentUsername();
 		postService.deletePost(id, username);
 		return ResponseEntity.ok().build();

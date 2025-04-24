@@ -18,8 +18,12 @@ import com.crazyatom.beboard.dto.CommentRequestDto;
 import com.crazyatom.beboard.dto.CommentResponseDto;
 import com.crazyatom.beboard.service.CommentService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "댓글", description = "댓글 API")
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/comments")
@@ -39,7 +43,10 @@ public class CommentController {
 	 * @return 댓글 목록
 	 */
 	@GetMapping("/{postId}")
-	public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId) {
+	public ResponseEntity<List<CommentResponseDto>> getComments(
+		@Parameter(description = "게시글 ID")
+		@PathVariable Long postId) {
+
 		List<CommentResponseDto> comments = commentService.getComments(postId);
 		return ResponseEntity.ok(comments);
 	}
@@ -51,8 +58,12 @@ public class CommentController {
 	 * @param dto    댓글 작성 정보
 	 * @return 작성된 댓글 ID
 	 */
+	@Operation(summary = "댓글 작성", description = "댓글을 작성합니다.")
 	@PostMapping("/{postId}")
-	public ResponseEntity<Long> createComment(@PathVariable Long postId,
+	public ResponseEntity<Long> createComment(
+		@Parameter(description = "게시글 ID")
+		@PathVariable Long postId,
+		@Parameter(description = "댓글 작성 정보")
 		@RequestBody CommentRequestDto dto) {
 
 		String username = getCurrentUsername();
@@ -65,16 +76,25 @@ public class CommentController {
 	 * @param commentId 댓글 ID
 	 * @param dto       수정 정보
 	 */
+	@Operation(summary = "댓글 수정", description = "댓글을 수정합니다.")
 	@PutMapping("/{commentId}")
-	public ResponseEntity<Void> updateComment(@PathVariable Long commentId,
+	public ResponseEntity<Void> updateComment(
+		@Parameter(description = "댓글 ID")
+		@PathVariable Long commentId,
+		@Parameter(description = "댓글 수정 정보")
 		@RequestBody CommentRequestDto dto) {
+
 		String username = getCurrentUsername();
 		commentService.updateComment(commentId, dto, username);
 		return ResponseEntity.ok().build();
 	}
 
+	@Operation(summary = "댓글 삭제", description = "댓글을 삭제합니다.")
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+	public ResponseEntity<Void> deleteComment(
+		@Parameter(description = "댓글 ID")
+		@PathVariable Long commentId) {
+
 		String username = getCurrentUsername();
 		commentService.deleteComment(commentId, username);
 		return ResponseEntity.ok().build();
