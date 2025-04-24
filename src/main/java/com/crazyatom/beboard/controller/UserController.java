@@ -17,6 +17,12 @@ public class UserController {
 
 	private final UserService userService;
 
+	/**
+	 * 회원가입
+	 * @param username 사용자 이름
+	 * @param password 비밀번호
+	 * @return 성공 메시지
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(
 		@RequestParam String username,
@@ -26,6 +32,12 @@ public class UserController {
 		return ResponseEntity.ok("User registered successfully");
 	}
 
+	/**
+	 * 로그인
+	 * @param username 사용자 이름
+	 * @param password 비밀번호
+	 * @return JWT 토큰
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<String> login(
 		@RequestParam String username,

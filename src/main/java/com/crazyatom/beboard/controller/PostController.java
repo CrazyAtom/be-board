@@ -74,7 +74,7 @@ public class PostController {
 	 * @return ResponseEntity<Long> 수정된 게시글 ID
 	 */
 	@PutMapping("/{id}")
-	public ResponseEntity<Long> updatePost(@PathVariable Long id, @RequestBody PostRequestDto dto) {
+	public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody PostRequestDto dto) {
 		String username = getCurrentUsername();
 		postService.updatePost(id, dto, username);
 		return ResponseEntity.ok().build();
@@ -86,8 +86,9 @@ public class PostController {
 	 */
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deletePost(@PathVariable Long id) {
+	public ResponseEntity<Void> deletePost(@PathVariable Long id) {
 		String username = getCurrentUsername();
 		postService.deletePost(id, username);
+		return ResponseEntity.ok().build();
 	}
 }
