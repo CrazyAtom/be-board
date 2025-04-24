@@ -26,7 +26,7 @@ public class SecurityConfig {
 			.formLogin(formLogin -> formLogin.disable())
 			.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/post/**").permitAll()
+				.requestMatchers("/posts/**").permitAll()
 				.requestMatchers("/api/**").permitAll()
 				.requestMatchers("/swagger-ui/**").permitAll()
 				.requestMatchers("/v3/api-docs/**").permitAll()

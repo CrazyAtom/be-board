@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>글 작성</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container py-5">
+<h1 class="mb-4">✏️ 글 작성</h1>
+
+<form id="postForm">
+  <div class="mb-3">
+    <label for="title" class="form-label">제목</label>
+    <input type="text" class="form-control" id="title" required>
+  </div>
+  <div class="mb-3">
+    <label for="content" class="form-label">내용</label>
+    <textarea class="form-control" id="content" rows="5" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">등록</button>
+  <a href="/posts" class="btn btn-secondary">취소</a>
+</form>
+
+<script>
+  document.getElementById('postForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const title = document.getElementById('title').value;
+    const content = document.getElementById('content').value;
+
+    fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content })
+    })
+            .then(response => {
+              if (!response.ok) throw new Error('글 등록 실패');
+              window.location.href = '/posts';
+            })
+            .catch(error => alert(error));
+  });
+</script>
+</body>
+</html>
