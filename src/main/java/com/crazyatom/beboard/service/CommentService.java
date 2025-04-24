@@ -43,6 +43,7 @@ public class CommentService {
 	 * @param username 작성자 username
 	 * @return 생성된 댓글 ID
 	 */
+	@Transactional
 	public Long createComment(Long postId, CommentRequestDto dto, String username) {
 		Post post = postRepository.findById(postId).orElseThrow();
 		User user = userRepository.findByUsername(username).orElseThrow();
@@ -58,6 +59,7 @@ public class CommentService {
 	 * @param dto 수정할 내용
 	 * @param username 작성자 username
 	 */
+	@Transactional
 	public void updateComment(Long id, CommentRequestDto dto, String username) {
 		Comment comment = commentRepository.findById(id).orElseThrow();
 
@@ -73,6 +75,7 @@ public class CommentService {
 	 * @param id 댓글 ID
 	 * @param username 작성자 username
 	 */
+	@Transactional
 	public void deleteComment(Long id, String username) {
 		Comment comment = commentRepository.findById(id).orElseThrow();
 
