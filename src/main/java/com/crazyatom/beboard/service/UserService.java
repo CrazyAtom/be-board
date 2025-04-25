@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.crazyatom.beboard.dto.UserSignupRequestDto;
 import com.crazyatom.beboard.entity.User;
 import com.crazyatom.beboard.jwt.JwtUtil;
 import com.crazyatom.beboard.repository.UserRepository;
@@ -21,17 +22,16 @@ public class UserService {
 
 	/**
 	 * 회원가입
-	 * @param username 사용자 이름
-	 * @param password 비밀번호
+	 * @param dto 사용자 정보
 	 */
 	@Transactional
-	public void signUp(String username, String password) {
-		if (userRepository.findByUsername(username).isPresent()) {
+	public void signUp(UserSignupRequestDto dto) {
+		if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
 			throw new RuntimeException("Username already exists");
 		}
 
 		userRepository.save(
-			User.createUser(username, passwordEncoder.encode(password))
+			User.createUser(dto.getUsername(), passwordEncoder.encode(dto.getPassword()))
 		);
 	}
 

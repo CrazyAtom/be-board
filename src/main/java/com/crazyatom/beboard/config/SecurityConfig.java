@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.crazyatom.beboard.jwt.JwtFilter;
+import com.crazyatom.beboard.service.CustomUserDetailsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,10 +19,12 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtFilter jwtFilter;
+	private final CustomUserDetailsService customUserDetailsService;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http.csrf(csrf -> csrf.disable())
+		return http
+			.csrf(csrf -> csrf.disable())
 			.httpBasic(httpBasic -> httpBasic.disable())
 			.formLogin(formLogin -> formLogin.disable())
 			.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -33,6 +36,15 @@ public class SecurityConfig {
 				.requestMatchers("/swagger-resources/**").permitAll()
 				.anyRequest().authenticated()
 			)
+			.formLogin(form -> form
+				.loginPage("/login")
+				.defaultSuccessUrl("/posts", true)
+				.permitAll()
+			)
+			.logout(logout -> logout
+				.logoutSuccessUrl("/login?logout")
+			)
+			.userDetailsService(customUserDetailsService)
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}

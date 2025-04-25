@@ -1,5 +1,12 @@
 package com.crazyatom.beboard.entity;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,17 +34,26 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
-	private String role;
+	private String role = "ROLE_USER";;
 
 	public static User createUser(String username, String password) {
 		User user = new User();
 		user.username = username;
 		user.password = password;
-		user.role = "ROLE_USER";
 		return user;
 	}
 
 	public void updateRole(String role) {
 		this.role = role;
 	}
+
+	// Spring Security용 메서드들
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority(role));
+	}
+	@Override public boolean isAccountNonExpired() { return true; }
+	@Override public boolean isAccountNonLocked() { return true; }
+	@Override public boolean isCredentialsNonExpired() { return true; }
+	@Override public boolean isEnabled() { return true; }
 }
