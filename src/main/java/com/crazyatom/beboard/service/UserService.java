@@ -4,7 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crazyatom.beboard.dto.UserSignupRequestDto;
+import com.crazyatom.beboard.dto.LoginRequestDto;
+import com.crazyatom.beboard.dto.LoginResponseDto;
 import com.crazyatom.beboard.entity.User;
 import com.crazyatom.beboard.jwt.JwtUtil;
 import com.crazyatom.beboard.repository.UserRepository;
@@ -25,7 +26,7 @@ public class UserService {
 	 * @param dto 사용자 정보
 	 */
 	@Transactional
-	public void signUp(UserSignupRequestDto dto) {
+	public void signUp(LoginRequestDto dto) {
 		if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
 			throw new RuntimeException("Username already exists");
 		}
@@ -41,7 +42,7 @@ public class UserService {
 	 * @param password 비밀번호
 	 * @return JWT 토큰
 	 */
-	public String login(String username, String password) {
+	public LoginResponseDto login(String username, String password) {
 		User user = userRepository.findByUsername(username)
 			.orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -49,6 +50,12 @@ public class UserService {
 			throw new RuntimeException("Invalid password");
 		}
 
-		return jwtUtil.generateToken(username);
+		String token = jwtUtil.generateToken(username);
+		return LoginResponseDto.builder()
+			.accessToken(token)
+			.tokenType("Bearer")
+			.username(user.getUsername())
+			.role(user.getRole())
+			.build();
 	}
 }

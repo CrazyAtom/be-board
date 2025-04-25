@@ -1,10 +1,12 @@
 package com.crazyatom.beboard.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
-public class UserSignupRequestDto {
+@Builder
+@Getter
+public class LoginRequestDto {
 
 	@NotBlank
 	private String username;
